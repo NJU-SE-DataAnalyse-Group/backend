@@ -1,18 +1,19 @@
-const mysql = require('mysql2');
+const sequelize = require('./config/database');
+const User = require('./models/user');
 
-// 创建数据库连接
-const connection = mysql.createConnection({
-    host: 'localhost',       // 数据库地址
-    user: 'root',            // 数据库用户名
-    password: '123456', // 数据库密码
-    database: 'test_db',     // 要连接的数据库名称
-});
+(async () => {
+    try {
+        await sequelize.sync({ force: true }); // 强制重建表，仅用于开发阶段
+        console.log('Database synced successfully.');
 
-// 测试连接
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
+        // 测试插入数据
+        const user = await User.create({
+            name: 'John Doe',
+            email: 'john@example.com',
+            password: '123456',
+        });
+        console.log(user.toJSON());
+    } catch (error) {
+        console.error('Error syncing database:', error);
     }
-    console.log('Connected to MySQL!');
-});
+})();
