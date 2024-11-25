@@ -1,19 +1,29 @@
-const sequelize = require('./config/database');
-const User = require('./models/user');
+const express = require('express');
+const app = express();
 
-(async () => {
-    try {
-        await sequelize.sync({ force: true }); // 强制重建表，仅用于开发阶段
-        console.log('Database synced successfully.');
+// 引入路由模块
+const userRoutes = require('./routes/userRoutes');
 
-        // 测试插入数据
-        const user = await User.create({
-            name: 'John Doe',
-            email: 'john@example.com',
-            password: '123456',
-        });
-        console.log(user.toJSON());
-    } catch (error) {
-        console.error('Error syncing database:', error);
-    }
-})();
+// 使用中间件解析 JSON 请求体
+app.use(express.json());
+
+
+// 挂载用户路由到 `/users`
+app.use('/user', userRoutes);
+
+// 处理未知路由
+app.use((req, res, next) => {
+    res.status(404).json({ error: 'Not found' });
+});
+
+// 通用错误处理中间件
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+});
+
+// 启动服务器
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
