@@ -5,12 +5,17 @@ const Paper = require('./models/paper');
 // 引入路由模块
 const userRoutes = require('./routes/userRoutes');
 
+const paperRoutes = require('./routes/paperRoutes');
+
 // 使用中间件解析 JSON 请求体
 app.use(express.json());
 
 
-// 挂载用户路由到 `/users`
+// 挂载用户路由到 `/user`
 app.use('/user', userRoutes);
+
+// 挂载论文路由到 `/paper`
+app.use('/paper', paperRoutes);
 
 // 处理未知路由
 app.use((req, res, next) => {
