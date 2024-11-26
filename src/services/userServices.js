@@ -25,7 +25,10 @@ const userServices = {
     async login(name, email, password) {
         try {
             const user  = await User.findOne({ where: { name, email, password } });
-            return user;
+
+            const isMatch = await bcrypt.compare(inputPassword, user.password);
+
+            if (isMatch) return user;
         } catch (error) {
             throw new Error(`Failed to login: ${error.message}`);
         }

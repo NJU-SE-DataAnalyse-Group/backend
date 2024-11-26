@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const Paper = require('./models/paper');
 
 // 引入路由模块
 const userRoutes = require('./routes/userRoutes');
