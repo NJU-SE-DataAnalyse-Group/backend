@@ -17,6 +17,10 @@ class Paper extends Model { }
 
 Paper.init(
     {
+        paper_id: {
+            type: DataTypes.INTEGER,
+            unique: true,
+        },
         title: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -44,7 +48,8 @@ Paper.init(
 // 插入数据函数
 const insertPapersFromCSV = async () => {
     const papers = [];
-
+    let cur_id = 0;
+    const rest_ids = [];
     // 查询表中的记录数，判断是否为空
     const paperCountInDb = await Paper.count();
     if (paperCountInDb > 0) {
@@ -63,6 +68,7 @@ const insertPapersFromCSV = async () => {
                     }
 
                     papers.push({
+                        paper_id: cur_id++,
                         title,
                         abstract: row.abstract,  // 确保已截断的文本被使用
                         category,
@@ -81,6 +87,8 @@ const insertPapersFromCSV = async () => {
 
                         papers.length = 0;  // 清空当前数组，准备下次插入
                     }
+                } else {
+                    rest_ids.push(cur_id++);
                 }
             })
             .on('end', async () => {
@@ -115,8 +123,10 @@ const insertPapersFromCSV = async () => {
                         console.warn(`Abstract for paper "${title}" is too long, truncating...`);
                         row.abstract = abstract.slice(0, MAX_ABSTRACT_LENGTH);  // 截断超长的文本
                     }
-
+                    let id  = rest_ids.shift();
+                    // console.log(id);
                     papers.push({
+                        paper_id: id,
                         title,
                         abstract: row.abstract,  // 确保已截断的文本被使用
                         category,
