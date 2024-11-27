@@ -17,4 +17,6 @@ router.get('/:id/citers', paperController.getListsOfCiters);
 // 获取该论文引用的所有论文
 router.get('/:id/citees', paperController.getListsOfCitees);
 
+
+
 module.exports = router;
