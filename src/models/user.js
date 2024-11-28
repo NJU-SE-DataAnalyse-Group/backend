@@ -41,28 +41,27 @@ User.init(
         modelName: 'User', // 模型名称
         tableName: 'users', // 表名称
         timestamps: true, // 启用 createdAt 和 updatedAt 字段
-    }, {
-    // 在保存前加密密码
-    hooks: {
-        beforeCreate: async (user, options) => {
-            const hashedEmail = await bcrypt.hash(user.email, 10);  // 盐值轮数为10
-            user.email = hashedEmail;  // 将加密后的密码赋值给 `email` 字段
-            const hashedPassword = await bcrypt.hash(user.password, 10);  // 盐值轮数为10
-            user.password = hashedPassword;  // 将加密后的密码赋值给 `password` 字段
-
-        },
-        beforeUpdate: async (user, options) => {
-            if (user.changed('email')) {
-                const hashedEmail = await bcrypt.hash(user.email, 10); // 盐值轮数为10
-                user.email = hashedEmail; // 更新加密后的密码
-            }
-            if (user.changed('password')) {
-                const hashedPassword = await bcrypt.hash(user.password, 10); // 盐值轮数为10
-                user.password = hashedPassword; // 更新加密后的密码
+        hooks: {
+            beforeCreate: async (user, options) => {
+                console.log(user.email);
+                const hashedEmail = await bcrypt.hash(user.email, 10);  // 盐值轮数为10
+                user.email = hashedEmail;  // 将加密后的密码赋值给 `email` 字段
+                const hashedPassword = await bcrypt.hash(user.password, 10);  // 盐值轮数为10
+                user.password = hashedPassword;  // 将加密后的密码赋值给 `password` 字段
+    
+            },
+            beforeUpdate: async (user, options) => {
+                if (user.changed('email')) {
+                    const hashedEmail = await bcrypt.hash(user.email, 10); // 盐值轮数为10
+                    user.email = hashedEmail; // 更新加密后的密码
+                }
+                if (user.changed('password')) {
+                    const hashedPassword = await bcrypt.hash(user.password, 10); // 盐值轮数为10
+                    user.password = hashedPassword; // 更新加密后的密码
+                }
             }
         }
     }
-}
 );
 
 (async () => {

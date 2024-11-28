@@ -16,7 +16,7 @@ const paperServices = {
         }
     },
 
-    async getPaperByTile(title) {
+    async getPaperByTitle(title) {
         try {
             const paper = await Paper.findOne({ where: { title } });
             return paper;
@@ -41,7 +41,7 @@ const paperServices = {
         try {
             const cites = await Cite.findAll({
                 where: {
-                    cited_paper: paperId
+                    cited_paper_id: paperId
                 }
             });
             return cites;
