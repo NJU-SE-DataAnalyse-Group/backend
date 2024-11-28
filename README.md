@@ -8,6 +8,11 @@
 
 ## Run
 ```shell
+# in proj root dir
 npm install
+cd ml_model
+python3 -u faiss_api.py
+# open another shell
+# in proj root dir
 node src/index.js 
 ```
