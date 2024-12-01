@@ -32,6 +32,24 @@ const paperController = {
             next(error);
         }
     },
+    async getListOfPapersByCategory(req, res, next) {
+        try {
+            const category = req.params.category;
+            const papers = await paperServices.getListOfPapersByCategory(category);
+            res.json(papers);
+        } catch (error) {
+            next(error);
+        }
+    },
+    async getListOfSimilarPapers(req, res, next) {
+        try {
+            const paperId = req.params.id;
+            const papers = await paperServices.getListOfSimilarPapers(paperId);
+            res.json(papers);
+        } catch (error) {
+            next(error);
+        }
+    },
     async getListsOfCiters(req, res, next) {
         try {
             const paperId = req.params.id;
@@ -54,4 +72,3 @@ const paperController = {
 };
 
 module.exports = paperController;
-
