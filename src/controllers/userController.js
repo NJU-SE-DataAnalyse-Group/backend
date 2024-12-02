@@ -15,6 +15,7 @@ async function createUser(req, res) {
 // 用户登录
 async function login(req, res) {
     const { name, email, password } = req.body;
+    
     try {
         const user = await userServices.login(name, email, password);
         if (!user) {

@@ -5,6 +5,7 @@ const userController = require('../controllers/userController');
 // 创建用户
 router.post('/', userController.createUser);
 
+
 // 用户登录
 router.post('/login', userController.login);
 

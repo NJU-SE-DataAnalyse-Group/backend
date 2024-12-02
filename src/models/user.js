@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 
 class User extends Model { }
 
+
 User.init(
+    
     {
         name: {
             type: DataTypes.STRING,
