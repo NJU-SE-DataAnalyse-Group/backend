@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const Paper = require('./models/paper');
 
@@ -6,6 +7,13 @@ const Paper = require('./models/paper');
 const userRoutes = require('./routes/userRoutes');
 
 const paperRoutes = require('./routes/paperRoutes');
+
+
+app.use(cors({
+    origin: 'http://localhost:8080', // 允许的前端地址
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // 允许的 HTTP 方法
+    credentials: true // 如果前端需要带 cookies
+}));
 
 // 使用中间件解析 JSON 请求体
 app.use(express.json());

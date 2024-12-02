@@ -1,5 +1,5 @@
 const User = require('../models/user'); // 引入 User 模型
-
+const bcrypt = require('bcryptjs'); // 引入 bcryptjs 库
 const userServices = {
     /**
      * 创建新用户
@@ -8,9 +8,11 @@ const userServices = {
      */
     async createUser(userData) {
         try {
+            // console.log(userData);
             const user = await User.create(userData);
             return user;
         } catch (error) {
+            // console.log(error);
             throw new Error(`Failed to create user: ${error.message}`);
         }
     },
@@ -24,10 +26,9 @@ const userServices = {
      */
     async login(name, email, password) {
         try {
-            const user  = await User.findOne({ where: { name, email, password } });
-
-            const isMatch = await bcrypt.compare(inputPassword, user.password);
-
+            const user  = await User.findOne({ where: { name } });
+            const isMatch = bcrypt.compare(password, user.password) && 
+                            bcrypt.compare(email, user.email);
             if (isMatch) return user;
         } catch (error) {
             throw new Error(`Failed to login: ${error.message}`);

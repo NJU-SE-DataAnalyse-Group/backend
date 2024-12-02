@@ -24,11 +24,6 @@ User.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        role: {
-            type: DataTypes.SMALLINT,
-            allowNull: false,
-            defaultValue: 0,
-        },
         access_level: {
             type: DataTypes.SMALLINT,
             allowNull: false,
@@ -43,7 +38,7 @@ User.init(
         timestamps: true, // 启用 createdAt 和 updatedAt 字段
         hooks: {
             beforeCreate: async (user, options) => {
-                console.log(user.email);
+                //console.log(user.email);
                 const hashedEmail = await bcrypt.hash(user.email, 10);  // 盐值轮数为10
                 user.email = hashedEmail;  // 将加密后的密码赋值给 `email` 字段
                 const hashedPassword = await bcrypt.hash(user.password, 10);  // 盐值轮数为10

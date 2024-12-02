@@ -2,9 +2,10 @@ const userServices = require('../services/userServices');
 
 // 创建用户
 async function createUser(req, res) {
-    const { name, email, password, role, access_level } = req.body;
+    const { name, email, password,  access_level } = req.body;
     try {
-        const newUser = await userServices.createUser({ name, email, password, role, access_level });
+        const newUser = await userServices.createUser({ name, email, password,  access_level });
+            // console.log(newUser);
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -71,13 +72,13 @@ async function getUserByEmail(req, res) {
 // 更新用户
 async function updateUser(req, res) {
     const userId = req.params.id;
-    const { name, email, password, role, access_level } = req.body;
+    const { name, email, password, access_level } = req.body;
     try {
         const user = await userServices.getUserById(userId);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        const updatedUser = await userServices.updateUser(userId, { name, email, password, role, access_level });
+        const updatedUser = await userServices.updateUser(userId, { name, email, password,  access_level });
         res.json(updatedUser);
     } catch (error) {
         res.status(500).json({ error: error.message });
