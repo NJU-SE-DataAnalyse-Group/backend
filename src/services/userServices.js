@@ -26,10 +26,17 @@ const userServices = {
      */
     async login(name, email, password) {
         try {
-            const user  = await User.findOne({ where: { name } });
-            const isMatch = bcrypt.compare(password, user.password) && 
-                            bcrypt.compare(email, user.email);
-            if (isMatch) return user;
+            const user = await User.findOne({ where: { name } });
+            // 等待 bcrypt.compare 完成，并且两个比较操作都成功才算匹配
+            const isPasswordMatch = await bcrypt.compare(password, user.password);
+            const isEmailMatch = await bcrypt.compare(email, user.email);
+
+            if (isPasswordMatch && isEmailMatch) {
+                return user;
+            } else {
+                console.log("Invalid password or email");
+                return null;
+            }
         } catch (error) {
             throw new Error(`Failed to login: ${error.message}`);
         }
