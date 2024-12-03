@@ -18,9 +18,9 @@ test_feats = feats[test_papers.index]
 
 train_labels = train_papers['category'].values
 val_labels = val_papers['category'].values
-test_labels = None  # 测试集无标签
+test_labels = None  
 
-# 特征标准化
+
 def standardize_features(X, mean=None, std=None):
     if mean is None or std is None:
         mean, std = np.mean(X, axis=0), np.std(X, axis=0)

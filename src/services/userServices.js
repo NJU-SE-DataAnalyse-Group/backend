@@ -1,18 +1,18 @@
-const User = require('../models/user'); // 引入 User 模型
-const bcrypt = require('bcryptjs'); // 引入 bcryptjs 库
+const User = require('../models/user');  
+const bcrypt = require('bcryptjs');  
 const userServices = {
     /**
      * 创建新用户
-     * @param {Object} userData 用户数据 { name, email, password, premium }
+     * @param {Object} userData 用户数据 { name, email, password, access_level }
      * @returns {Promise<Object>} 返回创建的用户对象
      */
     async createUser(userData) {
         try {
-            // console.log(userData);
+             
             const user = await User.create(userData);
             return user;
         } catch (error) {
-            // console.log(error);
+             
             throw new Error(`Failed to create user: ${error.message}`);
         }
     },
@@ -27,7 +27,7 @@ const userServices = {
     async login(name, email, password) {
         try {
             const user = await User.findOne({ where: { name } });
-            // 等待 bcrypt.compare 完成，并且两个比较操作都成功才算匹配
+             
             const isPasswordMatch = await bcrypt.compare(password, user.password);
             const isEmailMatch = await bcrypt.compare(email, user.email);
             console.log(isPasswordMatch, isEmailMatch);
@@ -105,7 +105,7 @@ const userServices = {
             if (!user) {
                 throw new Error('User not found');
             }
-            // 过滤掉 updateData 中值为 null 的字段
+             
             const filteredData = Object.fromEntries(
                 Object.entries(updateData).filter(([key, value]) => value !== null)
             );

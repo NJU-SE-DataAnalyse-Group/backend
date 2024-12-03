@@ -7,7 +7,7 @@ const paperServices = {
         try {
             const paper = await Paper.findOne({
                 where: {
-                    paper_id: paperId  // 这里替换为你要查询的 paper_id 值
+                    paper_id: paperId  
                 }
             });
             return paper;
@@ -24,7 +24,7 @@ const paperServices = {
             throw new Error(`Failed to find paper by title: ${error.message}`);
         }
     },
-    // Search function
+
     async search(keyword) {
         try {
             const response = await axios.post('http://localhost:5000/search', { keyword });
@@ -35,21 +35,18 @@ const paperServices = {
         }
     },
     async getListOfPapersByCategory(category) {
-        // 查询指定类别下的前10个论文标题
+
 
         const papers = await Paper.findAll({
 
             where: {
-
                 category
-
             },
-
-            limit: 10  // 只返回前10个结果
+            limit: 10  
 
         });
 
-        // 返回论文标题数组
+
 
         return papers;
     },
@@ -72,7 +69,7 @@ const paperServices = {
             throw new Error(`Failed to find similar papers: ${error.message}`);
         }
     },
-    // 获取引用该论文的所有论文
+
     async getListsOfCiters(paperId) {
         try {
             const cites = await Cite.findAll({
@@ -86,7 +83,7 @@ const paperServices = {
         }
     },
 
-    // 获取该论文引用的所有论文
+
     async getListsOfCitees(paperId) {
         try {
             const cites = await Cite.findAll({

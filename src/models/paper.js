@@ -6,13 +6,13 @@ const zlib = require('zlib');
 const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
-// 设置 TEXT 字段的最大长度限制
-const MAX_ABSTRACT_LENGTH = 65535;  // MySQL TEXT 字段的最大长度
 
-// 每批插入的大小
-const BATCH_SIZE = 10000;  // 每次插入 1000 条记录
+const MAX_ABSTRACT_LENGTH = 65535;
 
-// 模型定义
+
+const BATCH_SIZE = 10000;
+
+
 class Paper extends Model { }
 
 Paper.init(
@@ -26,7 +26,7 @@ Paper.init(
             allowNull: false,
         },
         abstract: {
-            type: DataTypes.TEXT,  // 使用 TEXT 类型
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         category: {
@@ -45,12 +45,12 @@ Paper.init(
     }
 );
 
-// 插入数据函数
+
 const insertPapersFromCSV = async () => {
     const papers = [];
     let cur_id = 0;
     const rest_ids = [];
-    // 查询表中的记录数，判断是否为空
+
     const paperCountInDb = await Paper.count();
     if (paperCountInDb > 0) {
         console.log('Paper table already has data, skipping insert.');
@@ -61,43 +61,38 @@ const insertPapersFromCSV = async () => {
             .on('data', (row) => {
                 const { title, abstract, category, year } = row;
                 if (year < 2019) {
-                    // 检查 abstract 字段长度，确保它不会超出数据库字段限制
                     if (abstract.length > MAX_ABSTRACT_LENGTH) {
                         console.warn(`Abstract for paper "${title}" is too long, truncating...`);
-                        row.abstract = abstract.slice(0, MAX_ABSTRACT_LENGTH);  // 截断超长的文本
+                        row.abstract = abstract.slice(0, MAX_ABSTRACT_LENGTH);
                     }
 
                     papers.push({
                         paper_id: cur_id++,
                         title,
-                        abstract: row.abstract,  // 确保已截断的文本被使用
+                        abstract: row.abstract,
                         category,
                         year: parseInt(year),
                     });
 
-                    // 每当数组长度达到批量大小时，插入一次数据
                     if (papers.length >= BATCH_SIZE) {
                         Paper.bulkCreate(papers, { validate: true })
                             .then(() => {
-                                //console.log(`Inserted ${papers.length} papers successfully.`);
                             })
                             .catch((error) => {
                                 console.error('Error inserting papers:', error);
                             });
 
-                        papers.length = 0;  // 清空当前数组，准备下次插入
+                        papers.length = 0;
                     }
                 } else {
                     rest_ids.push(cur_id++);
                 }
             })
             .on('end', async () => {
-                // 插入剩余的数据（如果有）
                 if (papers.length > 0) {
                     try {
                         await Paper.bulkCreate(papers, { validate: true });
-                        //console.log('Remaining papers inserted successfully');
-                        papers.length = 0;  // 清空当前数组 
+                        papers.length = 0;
                     } catch (error) {
                         console.error('Error inserting remaining papers:', error);
                     }
@@ -118,43 +113,43 @@ const insertPapersFromCSV = async () => {
                 .pipe(csv())
                 .on('data', (row) => {
                     const { title, abstract, category, year } = row;
-                    // 检查 abstract 字段长度，确保它不会超出数据库字段限制
+
                     if (abstract.length > MAX_ABSTRACT_LENGTH) {
                         console.warn(`Abstract for paper "${title}" is too long, truncating...`);
-                        row.abstract = abstract.slice(0, MAX_ABSTRACT_LENGTH);  // 截断超长的文本
+                        row.abstract = abstract.slice(0, MAX_ABSTRACT_LENGTH);
                     }
-                    let id  = rest_ids.shift();
-                    // console.log(id);
+                    let id = rest_ids.shift();
+
                     papers.push({
                         paper_id: id,
                         title,
-                        abstract: row.abstract,  // 确保已截断的文本被使用
+                        abstract: row.abstract,
                         category,
                         year: parseInt(year),
                     });
 
-                    // 每当数组长度达到批量大小时，插入一次数据
+
                     if (papers.length >= BATCH_SIZE) {
                         Paper.bulkCreate(papers, { validate: true })
                             .then(() => {
-                                //console.log(`Inserted ${papers.length} papers successfully.`);
+
                             })
                             .catch((error) => {
                                 console.error('Error inserting papers:', error);
                             });
                         tot_count += papers.length;
-                        papers.length = 0;  // 清空当前数组，准备下次插入
-                        // console.log('111All papers inserted successfully, total count:', tot_count);
+                        papers.length = 0;
+
                     }
 
                 })
                 .on('end', async () => {
-                    // 插入剩余的数据（如果有）
+
                     if (papers.length > 0) {
                         try {
                             tot_count += papers.length;
                             await Paper.bulkCreate(papers, { validate: true });
-                            //console.log('Remaining papers inserted successfully');
+
                         } catch (error) {
                             console.error('Error inserting remaining papers:', error);
                         }
@@ -170,14 +165,14 @@ const insertPapersFromCSV = async () => {
 
 };
 
-// 执行插入操作
+
 (async () => {
     try {
-        await sequelize.authenticate(); // 测试连接
+        await sequelize.authenticate();
 
-        await sequelize.sync(); // 同步模型
+        await sequelize.sync();
 
-        // 插入所有数据
+
         insertPapersFromCSV().then(() => {
             console.log('Paper model synced with the database');
         });

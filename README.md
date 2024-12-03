@@ -4,8 +4,9 @@
 `npm`: **10.6.0**  
 `node`: **v20.18.0**  
 `python3`  
-`mysql`: **9.1.0**
-
+`mysql`: **9.1.0**  
+`GloVe`: glove.6B.200d.txt  
+`Faiss`  
 ## Run
 ```shell
 # in proj root dir

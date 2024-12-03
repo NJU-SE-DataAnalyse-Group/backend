@@ -5,7 +5,6 @@ async function createUser(req, res) {
     const { name, email, password,  access_level } = req.body;
     try {
         const newUser = await userServices.createUser({ name, email, password,  access_level });
-            // console.log(newUser);
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ error: error.message });
