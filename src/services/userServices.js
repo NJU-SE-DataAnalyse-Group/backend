@@ -30,12 +30,9 @@ const userServices = {
              
             const isPasswordMatch = await bcrypt.compare(password, user.password);
             const isEmailMatch = await bcrypt.compare(email, user.email);
-            //console.log(isPasswordMatch, isEmailMatch);
             if (isPasswordMatch && isEmailMatch) {
-                //console.log("Login successful");
                 return user;
             } else {
-                //console.log("Invalid password or email");
                 return null;
             }
         } catch (error) {
