@@ -4,7 +4,7 @@ const paperController = {
     async getPaperById(req, res, next) {
         try {
             const paperId = req.params.id;
-            console.log(paperId);
+            //console.log(paperId);
             const paper = await paperServices.getPaperById(paperId);
             res.json(paper);
         } catch (error) {
