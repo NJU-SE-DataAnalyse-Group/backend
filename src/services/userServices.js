@@ -30,8 +30,9 @@ const userServices = {
             // 等待 bcrypt.compare 完成，并且两个比较操作都成功才算匹配
             const isPasswordMatch = await bcrypt.compare(password, user.password);
             const isEmailMatch = await bcrypt.compare(email, user.email);
-
+            console.log(isPasswordMatch, isEmailMatch);
             if (isPasswordMatch && isEmailMatch) {
+                console.log("Login successful");
                 return user;
             } else {
                 console.log("Invalid password or email");
@@ -79,8 +80,14 @@ const userServices = {
      */
     async getUserByEmail(email) {
         try {
-            const user = await User.findOne({ where: { email } });
-            return user;
+            const users = await User.findAll();
+            for (const user of users) {
+                const isEmailMatch = await bcrypt.compare(email, user.email);
+                if (isEmailMatch) {
+                    return user;
+                }
+            }
+            return null;
         } catch (error) {
             throw new Error(`Failed to find user by email: ${error.message}`);
         }

@@ -28,29 +28,30 @@ const paperServices = {
     async search(keyword) {
         try {
             const response = await axios.post('http://localhost:5000/search', { keyword });
-            const similarPapers = response.data;
-            console.log(similarPapers);
-            return similarPapers;
+            return response.data;
         } catch (error) {
             console.error("Error during search:", error);
             return [];
         }
     },
     async getListOfPapersByCategory(category) {
-        try {
-            // 查询指定类别下的所有论文标题
-            const papers = await Paper.findAll({
-                where: {
-                    category
-                },
-                attributes: ['title']  // 只选择 title 字段
-            });
-            
-            // 返回论文标题数组
-            return papers.map(paper => paper.title);
-        } catch (error) {
-            throw new Error(`Failed to find papers by category: ${error.message}`);
-        }
+        // 查询指定类别下的前10个论文标题
+
+        const papers = await Paper.findAll({
+
+            where: {
+
+                category
+
+            },
+
+            limit: 10  // 只返回前10个结果
+
+        });
+
+        // 返回论文标题数组
+
+        return papers;
     },
     async getListOfSimilarPapers(paperId) {
         try {
@@ -65,6 +66,7 @@ const paperServices = {
             });
 
             const similarPapers = response.data;
+            
             return similarPapers;
         } catch (error) {
             throw new Error(`Failed to find similar papers: ${error.message}`);
